@@ -2,9 +2,13 @@ package com.nortal.platformer;
 
 import java.util.*;
 
+import com.nortal.platformer.exception.HandledException;
+import com.nortal.platformer.input.CsvParser;
+import com.nortal.platformer.input.CsvReader;
+
 public class Game {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws HandledException {
         Game game = new Game("platforms.csv");
         game.run();
     }
@@ -17,7 +21,7 @@ public class Game {
         this.gameFile = gameFile;
     }
 
-    public void run() {
+    public void run() throws HandledException {
         List<Platform> platforms = readPlatforms();
 
         // TODO: Implement your mighty algorithm and jump to oblivion.
@@ -30,9 +34,12 @@ public class Game {
     /**
      * Reads platforms from csv file and returns the as list.
      * @return platforms - Platforms as list
+     * @throws HandledException 
      */
-    private List<Platform> readPlatforms() {
-        return Collections.emptyList();
+    private List<Platform> readPlatforms() throws HandledException {
+    	List<String> list = CsvReader.readFile(gameFile);
+    	List<Platform> parsedList = CsvParser.parseFile(list);
+        return parsedList;
     }
 
 
