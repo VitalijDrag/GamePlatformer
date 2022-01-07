@@ -9,4 +9,6 @@ public class Platform {
 
     private Integer index;
     private Integer cost;
+    @Builder.Default
+    private boolean visited = false; 
 }

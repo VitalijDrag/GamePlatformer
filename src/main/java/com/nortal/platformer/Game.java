@@ -16,7 +16,7 @@ public class Game {
 	private Integer points = 500;
 	private Platform activePlatform;
 	private final String gameFile;
-	List<Platform> platforms;
+	private List<Platform> platforms;
 
 	public Game(String gameFile) {
 		this.gameFile = gameFile;
@@ -25,31 +25,45 @@ public class Game {
 	public void run() throws HandledException {
 		platforms = readPlatforms();
 
-		// TODO: Implement your mighty algorithm and jump to oblivion.
+		// Start of the game at platform 0
 		activePlatform = platforms.get(0);
-		Platform nextPlatform = findNextPlatform();
-		jumpTo(nextPlatform);
-
+		activePlatform.setVisited(true);
+		
+		Platform lastPlatform = platforms.get(platforms.size()-1);
+		while (activePlatform.getIndex() != lastPlatform.getIndex()) {
+			Platform nextPlatform = findNextPlatform();
+			jumpTo(nextPlatform);
+		}
+			
+		System.out.println("Congratulations! You have rached the final platform " + lastPlatform.getIndex());
 	}
 
-	private Platform findNextPlatform() {
+	private Platform findNextPlatform() throws HandledException {
 		Platform followingPlatform = getPlatform(activePlatform.getIndex() + 1);
 		
-		if (followingPlatform.getCost() <= points) {
+		if (followingPlatform.isVisited()) {
+			System.out.println("Moving forward to visited platform. Getting " + followingPlatform.getCost() + " points");
+			points = points + followingPlatform.getCost();
+			return followingPlatform;
+		}
+		else if (followingPlatform.getCost() <= points) {
+			System.out.println("Moving forward to new platform. Paying " + followingPlatform.getCost() + " points");
 			points = points - followingPlatform.getCost();
+			followingPlatform.setVisited(true);
 			return followingPlatform;
 		} else {
 			Platform previousPlatform = getPlatform(activePlatform.getIndex() - 1);
+			System.out.println("Moving backwards to visited platform. Getting " + previousPlatform.getCost() + " points");
 			points = points + previousPlatform.getCost();
 			return previousPlatform;
 		}
 	}
 	
-	private Platform getPlatform (int index) {
+	private Platform getPlatform (int index) throws HandledException {
 		try {
 			return platforms.get(index);
 		} catch (IndexOutOfBoundsException e) {
-			return null;
+			throw new HandledException("Platform doesn't exist, index " + index);
 		}
 	}
 
@@ -71,6 +85,8 @@ public class Game {
 	 * @param platform - Platform that you are going to jump to.
 	 */
 	public void jumpTo(Platform platform) {
+		System.out.println("Moving from platform (" + activePlatform.getIndex() + ", " + activePlatform.getCost() 
+		+ ") to platform (" + platform.getIndex() + ", " + platform.getCost() + "). Current points " + points);
 		activePlatform = platform;
 	}
 }
