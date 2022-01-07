@@ -16,9 +16,9 @@ public class CsvParser {
 		dataList.remove(HEADER_LINE_NUMBER);
 		for (String line : dataList) {
 			String[] splitLine = line.split(", ");
-			Platform.builder()
+			parsedData.add(Platform.builder()
 			.index(Integer.parseInt(splitLine[0]))
-			.cost(Integer.parseInt(splitLine[1]));
+			.cost(Integer.parseInt(splitLine[1])).build());
 		}
 		
 		return parsedData;
